@@ -31,6 +31,44 @@ SELECT * FROM animals
 WHERE weight_kg >= 10.4 and weight_kg <= 17.3;
 
 -------------------------------------------------------------------
+BEGIN;
+UPDATE animals
+SET species = 'unspecified';
+SELECT * FROM animals;
+ROLLBACK;
+
+BEGIN;
+UPDATE animals
+SET species = 'digimon'
+WHERE name LIKE '%mon';
+UPDATE animals
+SET species = 'pokemon'
+WHERE name NOT LIKE '%mon';
+COMMIT;
+
+BEGIN;
+DELETE FROM animals;
+ROLLBACK;
+
+-- as I didn't notice that I have to put some weights as negative in the begining 
+-- I inserted it first to the selected animals 
+BEGIN;
+UPDATE animals
+SET weight_kg = weight_kg*-1
+WHERE name IN ('Charmander', 'Plantmon', 'Squirtle', 'Angemon');
+COMMIT;
+-- then removed the negative here as instructed in the activiity
+BEGIN;
+DELETE FROM animals
+WHERE date_of_birth > '20220101';
+SAVEPOINT sp1;
+UPDATE animals
+SET weight_kg = weight_kg*-1;
+ROLLBACK TO sp1;
+UPDATE animals
+SET weight_kg = weight_kg*-1
+WHERE weight_kg < 0;
+COMMIT;
 
 -- How many animals are there?
 SELECT COUNT(*) FROM animals;
